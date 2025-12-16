@@ -6,13 +6,11 @@ print(settings)
 
 settings.update({"runs_dir": "/path/to/runs"})
 
-# Update multiple settings
+
 settings.update({"runs_dir": "/path/to/runs", "tensorboard": False})
 
-# Reset settings to default values
 settings.reset()
 
-# Cargar modelo preentrenado
 yolo_model = YOLO("yolov8n.pt")  
 
 def detect_tree(image_path, conf=0.25):
