@@ -226,7 +226,8 @@ elif st.session_state["pantalla"] == "crear_dataset":
         if uploaded_image and especie and latitud != 0 and longitud != 0:
 
             ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-            img_name = f"tree_{ts}.jpg"
+            ext = uploaded_image.name.split(".")[-1]
+            img_name = f"tree_{ts}.{ext}"
             img_path = os.path.join(IMAGE_DIR, img_name)
 
             with open(img_path, "wb") as f:
@@ -246,6 +247,7 @@ elif st.session_state["pantalla"] == "crear_dataset":
                 altura, dap, m_st, biomasa, densidad,
                 temperatura, precipitacion, datetime.now()
             ]
+            df["captura_carbono"] = 0.5 * (df["biomasa"])
 
             df.to_csv(CSV_PATH, index=False)
             st.success("Registro guardado correctamente 🌱")
