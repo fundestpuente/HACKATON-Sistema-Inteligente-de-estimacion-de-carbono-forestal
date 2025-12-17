@@ -6,6 +6,8 @@ import pandas as pd
 from Code.verificacion_input import validar_diametro
 from Code.procesamiento_datos import procesar_datos
 from Code.model import modelo
+from identf.model_utils import load_model, predict_top2
+from datetime import datetime
 
 DEFAULT_DATASET_PATH = r"climate_data\baad_data.csv"
 
@@ -45,6 +47,14 @@ def cargar_datos(df_cargado, otro):
             st.rerun()
 
 if st.session_state["pantalla"] == "inicio":
+    st.markdown("## 🌳 TREEVAL")
+    st.write("Sistema inteligente para creación de datasets forestales con visión artificial.")
+
+    if st.button("📸 Crear Dataset (TREEVAL)"):
+        st.session_state["pantalla"] = "crear_dataset"
+        st.rerun()
+
+    st.divider()
 
     st.title("Sistema de estimación de carbono forestal")
     st.write("Sube un archivo con datos de diámetros de árboles (CSV, Excel o JSON).")
@@ -162,3 +172,87 @@ elif st.session_state["pantalla"] == "prediccion":
     # Opción alternativa: Mostrar la tabla de datos
     with st.expander("Ver datos exactos de importancia"):
         st.dataframe(importances)
+
+elif st.session_state["pantalla"] == "crear_dataset":
+
+    st.markdown("# 🌳 TREEVAL – Creación de Dataset")
+    st.write("Registro de árboles asistido por IA")
+
+    model, classes, device = load_model()
+
+    DATA_DIR = "data"
+    IMAGE_DIR = "images"
+    os.makedirs(DATA_DIR, exist_ok=True)
+    os.makedirs(IMAGE_DIR, exist_ok=True)
+    CSV_PATH = os.path.join(DATA_DIR, "dataset.csv")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        uploaded_image = st.file_uploader("Sube una foto del árbol", type=["jpg", "png", "jpeg"])
+        preds = None
+
+        if uploaded_image:
+            st.image(uploaded_image, width=300)
+
+            with st.spinner("Analizando especie..."):
+                preds = predict_top2(uploaded_image, model, classes, device)
+
+            st.subheader("Especies más probables")
+            for i, p in enumerate(preds, 1):
+                st.success(f"Opción {i}: {p['especie']} ({p['confianza']:.2f}%)")
+
+            especie = st.selectbox(
+                "Especie sugerida (editable)",
+                [p["especie"] for p in preds]
+            )
+        else:
+            especie = st.text_input("Especie")
+
+        latitud = st.number_input("Latitud", format="%.6f")
+        longitud = st.number_input("Longitud", format="%.6f")
+        tipo_bosque = st.text_input("Tipo de bosque")
+
+    with col2:
+        altura = st.number_input("Altura (m)", min_value=0.0)
+        dap = st.number_input("DAP (cm)", min_value=0.0)
+        m_st = st.number_input("m_st", min_value=0.0)
+        biomasa = st.number_input("Biomasa (kg)", min_value=0.0)
+        densidad = st.number_input("Densidad madera", min_value=0.0)
+        temperatura = st.number_input("Temperatura (°C)")
+        precipitacion = st.number_input("Precipitación (mm)", min_value=0.0)
+
+    if st.button("🌿 Guardar en Dataset"):
+        if uploaded_image and especie and latitud != 0 and longitud != 0:
+
+            ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+            img_name = f"tree_{ts}.jpg"
+            img_path = os.path.join(IMAGE_DIR, img_name)
+
+            with open(img_path, "wb") as f:
+                f.write(uploaded_image.getbuffer())
+
+            if os.path.exists(CSV_PATH):
+                df = pd.read_csv(CSV_PATH)
+            else:
+                df = pd.DataFrame(columns=[
+                    "image_path","latitud","longitud","tipo_bosque","especie",
+                    "altura","dap","m_st","biomasa","densidad",
+                    "temperatura","precipitacion","fecha"
+                ])
+
+            df.loc[len(df)] = [
+                img_path, latitud, longitud, tipo_bosque, especie,
+                altura, dap, m_st, biomasa, densidad,
+                temperatura, precipitacion, datetime.now()
+            ]
+
+            df.to_csv(CSV_PATH, index=False)
+            st.success("Registro guardado correctamente 🌱")
+
+        else:
+            st.error("Completa todos los campos obligatorios")
+
+    if st.button("⬅️ Volver al inicio"):
+        st.session_state["pantalla"] = "inicio"
+        st.rerun()
