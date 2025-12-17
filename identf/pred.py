@@ -1,11 +1,16 @@
+import os
 import torch
 from torchvision import transforms
 from PIL import Image
 from resnet import getresnet18
 
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "resnet18_arboles.pth")
+
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-checkpoint = torch.load("resnet18_arboles_ec.pth", map_location=device)
+checkpoint = torch.load(MODEL_PATH, map_location=device)
 classes = checkpoint["classes"]
 
 model = getresnet18(len(classes))

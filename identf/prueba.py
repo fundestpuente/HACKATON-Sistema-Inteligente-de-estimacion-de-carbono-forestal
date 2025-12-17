@@ -4,9 +4,10 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from resnet import getresnet18
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATASET_DIR = os.path.join(BASE_DIR, "dataset_res")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+
+MODEL_PATH = os.path.join(BASE_DIR, "resnet18_arboles.pth")
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -20,13 +21,13 @@ transform = transforms.Compose([
 ])
 
 test_dataset = datasets.ImageFolder(
-    os.path.join(DATASET_DIR, "test"),
+    r"HACKATON-Sistema-Inteligente-de-estimacion-de-carbono-forestal\dataset_res\test",
     transform=transform
 )
 
 test_loader = DataLoader(test_dataset, batch_size=8, shuffle=False)
 
-checkpoint = torch.load("resnet18_arboles_ec.pth", map_location=device)
+checkpoint = torch.load(MODEL_PATH, map_location=device)
 classes = checkpoint["classes"]
 
 model = getresnet18(len(classes))
