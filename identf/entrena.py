@@ -4,7 +4,9 @@ import torch.nn as nn
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from resnet import getresnet18
+#entrena el modelo
 
+#rutas para que no hayan conflictos
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "resnet18_arboles.pth")
 

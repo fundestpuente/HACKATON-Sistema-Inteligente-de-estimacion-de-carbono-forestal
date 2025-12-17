@@ -4,9 +4,8 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from resnet import getresnet18
 
+#prueba de precision del modelo entrenado
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-
 MODEL_PATH = os.path.join(BASE_DIR, "resnet18_arboles.pth")
 
 device = "cuda" if torch.cuda.is_available() else "cpu"

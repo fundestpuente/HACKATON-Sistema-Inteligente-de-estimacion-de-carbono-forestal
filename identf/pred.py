@@ -4,7 +4,7 @@ from torchvision import transforms
 from PIL import Image
 from resnet import getresnet18
 
-
+#predice la imagen de entrada
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "resnet18_arboles.pth")
 
@@ -26,7 +26,7 @@ transform = transforms.Compose([
         std=[0.229, 0.224, 0.225]
     )
 ])
-
+#funcion de prediccion
 def predict(image_path):
     img = Image.open(image_path).convert("RGB")
     img = transform(img).unsqueeze(0).to(device)
