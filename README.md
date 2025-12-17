@@ -16,7 +16,7 @@
 ## Resumen
 
 El sistema propuesto busca implementar una mejora en los estudios de captura de carbono forestal al aplicar un modelo de machine learning para estimar la
-biomasa aérea de árboles, y reemplazar las ecuaciones alométricas comúnmente empleadas en este tipo de estudios.
+biomasa aérea de árboles, y reemplazar las ecuaciones alométricas comúnmente empleadas en este tipo de estudios, también intenta mejorar la identificación de especies arbóreas y la creación de documentos para el análisis del carbono forestal.
 
 
 ## Planteamiento del problema
@@ -35,12 +35,15 @@ Este proceso es lento, costoso y susceptible a errores humanos, especialmente cu
 - **Python** como lenguaje principal.  
 - **Streamlit**, para construir una interfaz gráfica interactiva y accesible.  
 - **Random Forest**, como modelo de Machine Learning para la estimación de variables forestales.  
-- **Pandas y NumPy**, para manipulación, limpieza y análisis de datos.  
+- **Pandas y NumPy**, para manipulación, limpieza y análisis de datos.
+- **Resnet18**, como arquitectura de red neuronal para la identificación de especies arbóreas.
+- **Pytorch**, para el entrenamiento de la arquitectura de identificación.
 
 ---
 
 ## Resultado del proyecto
 El proyecto logró integrar un sistema capaz de recibir datos de inventarios forestales, validar y procesar la información ingresada por el usuario, y aplicar un modelo predictivo basado en Random Forest para estimar variables clave relacionadas al carbono forestal.  
+También logra identificar la especie arbórea ingresada con una precisión del 77%.
 La herramienta demuestra que es posible automatizar parte del proceso técnico involucrado en estudios de captura de carbono, facilitando el análisis incluso cuando existen datos faltantes (como la altura). Esto abre la puerta a procesos más ágiles, accesibles y confiables para la evaluación del recurso forestal utilizando inteligencia artificial.
 
 ## ⚙️ Instrucciones de Instalación y Ejecución
@@ -65,12 +68,13 @@ La herramienta demuestra que es posible automatizar parte del proceso técnico i
 
 3. Ejecutar la aplicación (ejemplo):
    ```bash
-   streamlit run app.py
+   streamlit run interface.py
 
 ---
 
 
-La data se consiguió en el [siguiente repositorio](https://github.com/dfalster/baad/blob/master/data/Garber2005/data.csv)
+La data para el modelo de Machine Learning se consiguió en el [siguiente repositorio](https://github.com/dfalster/baad/blob/master/data/Garber2005/data.csv)
+La dataset usada para el entrenamiento de la arquitectura fue conseguido de [inaturalist](www.inaturalist.org)
 
 
 
